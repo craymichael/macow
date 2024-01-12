@@ -40,7 +40,7 @@ class NIN2d(nn.Module):
             out = out + self.bias
         return out
 
-    def extra_repr(self):
+    def extra_repr(self) -> str:
         return 'in_features={}, out_features={}, bias={}'.format(
             self.in_features, self.out_features, self.bias is not None
         )
@@ -96,7 +96,7 @@ class NIN4d(nn.Module):
             out = out + self.bias
         return out
 
-    def extra_repr(self):
+    def extra_repr(self) -> str:
         return 'in_features={}, out_features={}, bias={}'.format(
             self.in_features, self.out_features, self.bias is not None
         )
@@ -135,7 +135,7 @@ class LinearWeightNorm(nn.Module):
             nn.init.constant_(self.linear.bias, 0)
         self.linear = nn.utils.weight_norm(self.linear)
 
-    def extra_repr(self):
+    def extra_repr(self) -> str:
         return 'in_features={}, out_features={}, bias={}'.format(
             self.in_features, self.out_features, self.bias is not None
         )
@@ -195,8 +195,8 @@ class Conv2dWeightNorm(nn.Module):
     def forward(self, input):
         return self.conv(input)
 
-    @overrides
-    def extra_repr(self):
+    # @overrides
+    def extra_repr(self) -> str:
         return self.conv.extra_repr()
 
 
@@ -241,8 +241,8 @@ class ConvTranspose2dWeightNorm(nn.Module):
     def forward(self, input):
         return self.deconv(input)
 
-    @overrides
-    def extra_repr(self):
+    # @overrides
+    def extra_repr(self) -> str:
         return self.deconv.extra_repr()
 
 
@@ -327,7 +327,7 @@ class MaskedConv2d(nn.Module):
         return F.conv2d(input, weight, self.bias, self.stride,
                         self.padding, self.dilation, self.groups)
 
-    def extra_repr(self):
+    def extra_repr(self) -> str:
         s = ('{in_channels}({masked_channels}), {out_channels}, kernel_size={kernel_size}'
              ', stride={stride}')
         if self.padding != (0,) * len(self.padding):
@@ -395,8 +395,8 @@ class ShiftedConv2d(Conv2dWeightNorm):
             input = input[:, :, t:height + b, l:width + r]
         return self.conv(input)
 
-    @overrides
-    def extra_repr(self):
+    # @overrides
+    def extra_repr(self) -> str:
         s = self.conv.extra_repr()
         s += ', order={order}'
         s += ', shift_padding={shift_padding}'

@@ -29,7 +29,7 @@ class Conv1x1Flow(Flow):
     def sync(self):
         self.weight_inv.copy_(self.weight.data.inverse())
 
-    @overrides
+    # @overrides
     def forward(self, input: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
         """
         Args:
@@ -45,7 +45,7 @@ class Conv1x1Flow(Flow):
         _, logdet = torch.slogdet(self.weight)
         return out, logdet.mul(H * W)
 
-    @overrides
+    # @overrides
     def backward(self, input: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
         """
         Args:
@@ -61,12 +61,12 @@ class Conv1x1Flow(Flow):
         _, logdet = torch.slogdet(self.weight_inv)
         return out, logdet.mul(H * W)
 
-    @overrides
+    # @overrides
     def init(self, data, init_scale=1.0) -> Tuple[torch.Tensor, torch.Tensor]:
         with torch.no_grad():
             return self.forward(data)
 
-    @overrides
+    # @overrides
     def extra_repr(self):
         return 'inverse={}, in_channels={}'.format(self.inverse, self.in_channels)
 
@@ -138,7 +138,7 @@ class MaskedConvFlow(Flow):
             scale = log_scale.add_(2.).sigmoid_()
         return mu, scale
 
-    @overrides
+    # @overrides
     def forward(self, input: torch.Tensor, s=None) -> Tuple[torch.Tensor, torch.Tensor]:
         """
         Args:
@@ -221,7 +221,7 @@ class MaskedConvFlow(Flow):
         out = out[:, :, cH:cH + H, :W] if reverse else out[:, :, cH:cH + H, kW:]
         return out
 
-    @overrides
+    # @overrides
     def backward(self, input: torch.Tensor, s=None) -> Tuple[torch.Tensor, torch.Tensor]:
         """
         Args:
@@ -249,7 +249,7 @@ class MaskedConvFlow(Flow):
         _, logdet = self.forward(out, s=s)
         return out, logdet.mul(-1.0)
 
-    @overrides
+    # @overrides
     def init(self, data, s=None, init_scale=1.0) -> Tuple[torch.Tensor, torch.Tensor]:
         if self.s_conv is not None:
             s = self.s_conv.init(s, init_scale=init_scale)

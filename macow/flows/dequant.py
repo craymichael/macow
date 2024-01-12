@@ -61,7 +61,7 @@ class DeQuantFlow(Flow):
                 out = layer.init(out, init_scale=init_scale)
         return out
 
-    @overrides
+    # @overrides
     def forward(self, input: torch.Tensor, s=None) -> Tuple[torch.Tensor, torch.Tensor]:
         if self.encoder is not None:
             s = self.encoder(s)
@@ -70,7 +70,7 @@ class DeQuantFlow(Flow):
         logdet_accum = logdet_accum + logdet
         return out, logdet_accum
 
-    @overrides
+    # @overrides
     def backward(self, input: torch.Tensor, s=None) -> Tuple[torch.Tensor, torch.Tensor]:
         if self.encoder is not None:
             s = self.encoder(s)
@@ -79,7 +79,7 @@ class DeQuantFlow(Flow):
         logdet_accum = logdet_accum + logdet
         return out, logdet_accum
 
-    @overrides
+    # @overrides
     def init(self, data, s=None, init_scale=1.0) -> Tuple[torch.Tensor, torch.Tensor]:
         if self.encoder is not None:
             s = self.init_encoder(s, init_scale=init_scale)

@@ -25,7 +25,7 @@ class MaCowUnit(Flow):
         self.conv3 = MaskedConvFlow(in_channels, (kernel_size[1], kernel_size[0]), s_channels=s_channels, order='C', scale=scale, inverse=inverse)
         self.conv4 = MaskedConvFlow(in_channels, (kernel_size[1], kernel_size[0]), s_channels=s_channels, order='D', scale=scale, inverse=inverse)
 
-    @overrides
+    # @overrides
     def forward(self, input: torch.Tensor, s=None) -> Tuple[torch.Tensor, torch.Tensor]:
         # ActNorm1
         out, logdet_accum = self.actnorm1.forward(input)
@@ -66,7 +66,7 @@ class MaCowUnit(Flow):
         logdet_accum = logdet_accum + logdet
         return out, logdet_accum
 
-    @overrides
+    # @overrides
     def init(self, data, s=None, init_scale=1.0) -> Tuple[torch.Tensor, torch.Tensor]:
         # ActNorm1
         out, logdet_accum = self.actnorm1.init(data, init_scale=init_scale)
@@ -108,7 +108,7 @@ class MaCowStep(Flow):
     def sync(self):
         self.glow_step.sync()
 
-    @overrides
+    # @overrides
     def forward(self, input: torch.Tensor, s=None) -> Tuple[torch.Tensor, torch.Tensor]:
         logdet_accum = input.new_zeros(input.size(0))
         out = input
@@ -119,7 +119,7 @@ class MaCowStep(Flow):
         logdet_accum = logdet_accum + logdet
         return out, logdet_accum
 
-    @overrides
+    # @overrides
     def backward(self, input: torch.Tensor, s=None) -> Tuple[torch.Tensor, torch.Tensor]:
         out, logdet_accum = self.glow_step.backward(input, s=s)
         for unit in reversed(self.units):
@@ -127,7 +127,7 @@ class MaCowStep(Flow):
             logdet_accum = logdet_accum + logdet
         return out, logdet_accum
 
-    @overrides
+    # @overrides
     def init(self, data, s=None, init_scale=1.0) -> Tuple[torch.Tensor, torch.Tensor]:
         logdet_accum = data.new_zeros(data.size(0))
         out = data
@@ -152,7 +152,7 @@ class MaCowBottomBlock(Flow):
         for step in self.steps:
             step.sync()
 
-    @overrides
+    # @overrides
     def forward(self, input: torch.Tensor, s=None) -> Tuple[torch.Tensor, torch.Tensor]:
         out = input
         # [batch]
@@ -162,7 +162,7 @@ class MaCowBottomBlock(Flow):
             logdet_accum = logdet_accum + logdet
         return out, logdet_accum
 
-    @overrides
+    # @overrides
     def backward(self, input: torch.Tensor, s=None) -> Tuple[torch.Tensor, torch.Tensor]:
         logdet_accum = input.new_zeros(input.size(0))
         out = input
@@ -171,7 +171,7 @@ class MaCowBottomBlock(Flow):
             logdet_accum = logdet_accum + logdet
         return out, logdet_accum
 
-    @overrides
+    # @overrides
     def init(self, data, s=None, init_scale=1.0) -> Tuple[torch.Tensor, torch.Tensor]:
         out = data
         # [batch]
@@ -197,7 +197,7 @@ class MaCowTopBlock(Flow):
         for step in self.steps:
             step.sync()
 
-    @overrides
+    # @overrides
     def forward(self, input: torch.Tensor, s=None) -> Tuple[torch.Tensor, torch.Tensor]:
         out = input
         # [batch]
@@ -207,7 +207,7 @@ class MaCowTopBlock(Flow):
             logdet_accum = logdet_accum + logdet
         return out, logdet_accum
 
-    @overrides
+    # @overrides
     def backward(self, input: torch.Tensor, s=None) -> Tuple[torch.Tensor, torch.Tensor]:
         logdet_accum = input.new_zeros(input.size(0))
         out = input
@@ -216,7 +216,7 @@ class MaCowTopBlock(Flow):
             logdet_accum = logdet_accum + logdet
         return out, logdet_accum
 
-    @overrides
+    # @overrides
     def init(self, data, s=None, init_scale=1.0) -> Tuple[torch.Tensor, torch.Tensor]:
         out = data
         # [batch]
@@ -257,7 +257,7 @@ class MaCowInternalBlock(Flow):
                 step.sync()
             prior.sync()
 
-    @overrides
+    # @overrides
     def forward(self, input: torch.Tensor, s=None) -> Tuple[torch.Tensor, torch.Tensor]:
         out = input
         # [batch]
@@ -279,7 +279,7 @@ class MaCowInternalBlock(Flow):
         out = unsplit2d(outputs)
         return out, logdet_accum
 
-    @overrides
+    # @overrides
     def backward(self, input: torch.Tensor, s=None) -> Tuple[torch.Tensor, torch.Tensor]:
         out = input
         outputs = []
@@ -302,7 +302,7 @@ class MaCowInternalBlock(Flow):
         assert len(outputs) == 0
         return out, logdet_accum
 
-    @overrides
+    # @overrides
     def init(self, data, s=None, init_scale=1.0) -> Tuple[Tuple[torch.Tensor, torch.Tensor], torch.Tensor]:
         out = data
         # [batch]
@@ -371,7 +371,7 @@ class MaCow(Flow):
         for block in self.blocks:
             block.sync()
 
-    @overrides
+    # @overrides
     def forward(self, input: torch.Tensor, s=None) -> Tuple[torch.Tensor, torch.Tensor]:
         logdet_accum = input.new_zeros(input.size(0))
         out = input
@@ -395,7 +395,7 @@ class MaCow(Flow):
         assert len(outputs) == 0
         return out, logdet_accum
 
-    @overrides
+    # @overrides
     def backward(self, input: torch.Tensor, s=None) -> Tuple[torch.Tensor, torch.Tensor]:
         outputs = []
         if s is not None:
@@ -423,7 +423,7 @@ class MaCow(Flow):
         assert len(outputs) == 0
         return out, logdet_accum
 
-    @overrides
+    # @overrides
     def init(self, data, s=None, init_scale=1.0) -> Tuple[torch.Tensor, torch.Tensor]:
         logdet_accum = data.new_zeros(data.size(0))
         out = data

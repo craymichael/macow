@@ -14,7 +14,7 @@ class IdentityFlow(Flow):
     def __init__(self, inverse=False):
         super(IdentityFlow, self).__init__(inverse)
 
-    @overrides
+    # @overrides
     def forward(self, input: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
         """
 
@@ -29,7 +29,7 @@ class IdentityFlow(Flow):
         """
         return input, input.new_zeros(input.size(0))
 
-    @overrides
+    # @overrides
     def backward(self, input: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
         """
 
@@ -44,12 +44,12 @@ class IdentityFlow(Flow):
         """
         return input, input.new_zeros(input.size(0))
 
-    @overrides
+    # @overrides
     def init(self, data, init_scale=1.0) -> Tuple[torch.Tensor, torch.Tensor]:
         with torch.no_grad():
             return self.forward(data)
 
-    @overrides
+    # @overrides
     def extra_repr(self):
         return 'inverse={}'.format(self.inverse)
 
@@ -64,7 +64,7 @@ class PowshrinkFlow(Flow):
         assert exponent >= 1.0, 'exponent should be greater or equal to 1.0'
         self.exponent=exponent
 
-    @overrides
+    # @overrides
     def forward(self, input: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
         """
 
@@ -86,7 +86,7 @@ class PowshrinkFlow(Flow):
         logdet = ((input + 1e-8).log().mul(self.exponent - 1) + math.log(self.exponent)).mul(mask).view(input.size(0), -1).sum(dim=1)
         return out, logdet
 
-    @overrides
+    # @overrides
     def backward(self, input: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
         """
 
@@ -108,12 +108,12 @@ class PowshrinkFlow(Flow):
         logdet = ((input + 1e-8).log().mul(1.0 / self.exponent - 1) - math.log(self.exponent)).mul(mask).view(out.size(0), -1).sum(dim=1)
         return out, logdet
 
-    @overrides
+    # @overrides
     def init(self, data, init_scale=1.0) -> Tuple[torch.Tensor, torch.Tensor]:
         with torch.no_grad():
             return self.forward(data)
 
-    @overrides
+    # @overrides
     def extra_repr(self):
         return 'inverse={}'.format(self.inverse)
 
@@ -128,7 +128,7 @@ class LeakyReLUFlow(Flow):
         assert negative_slope > 0.0, 'negative slope should be positive'
         self.negative_slope = negative_slope
 
-    @overrides
+    # @overrides
     def forward(self, input: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
         """
 
@@ -147,7 +147,7 @@ class LeakyReLUFlow(Flow):
         logdet = input.view(input.size(0), -1).lt(0.0).type_as(input).sum(dim=1) * log_slope
         return out, logdet
 
-    @overrides
+    # @overrides
     def backward(self, input: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
         """
 
@@ -167,12 +167,12 @@ class LeakyReLUFlow(Flow):
         logdet = input.view(input.size(0), -1).lt(0.0).type_as(input).sum(dim=1) * log_slope
         return out, logdet
 
-    @overrides
+    # @overrides
     def init(self, data, init_scale=1.0) -> Tuple[torch.Tensor, torch.Tensor]:
         with torch.no_grad():
             return self.forward(data)
 
-    @overrides
+    # @overrides
     def extra_repr(self):
         return 'inverse={}, negative_slope={}'.format(self.inverse, self.negative_slope)
 
@@ -186,7 +186,7 @@ class ELUFlow(Flow):
         super(ELUFlow, self).__init__(inverse)
         self.alpha = alpha
 
-    @overrides
+    # @overrides
     def forward(self, input: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
         """
 
@@ -207,7 +207,7 @@ class ELUFlow(Flow):
         logdet = (input.lt(0.0).type_as(input) * logdet).sum(dim=1)
         return out, logdet
 
-    @overrides
+    # @overrides
     def backward(self, input: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
         """
 
@@ -229,12 +229,12 @@ class ELUFlow(Flow):
         logdet = (mask.view(out_flat.size()) * logdet).sum(dim=1).mul(-1.0)
         return out, logdet
 
-    @overrides
+    # @overrides
     def init(self, data, init_scale=1.0) -> Tuple[torch.Tensor, torch.Tensor]:
         with torch.no_grad():
             return self.forward(data)
 
-    @overrides
+    # @overrides
     def extra_repr(self):
         return 'inverse={}, alpha={}'.format(self.inverse, self.alpha)
 
@@ -247,7 +247,7 @@ class SigmoidFlow(Flow):
     def __init__(self, inverse=False):
         super(SigmoidFlow, self).__init__(inverse)
 
-    @overrides
+    # @overrides
     def forward(self, input: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
         """
 
@@ -265,7 +265,7 @@ class SigmoidFlow(Flow):
         logdet = logdet.view(logdet.size(0), -1).sum(dim=1) * -1.
         return out, logdet
 
-    @overrides
+    # @overrides
     def backward(self, input: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
         """
 
@@ -284,12 +284,12 @@ class SigmoidFlow(Flow):
         logdet = logdet.view(logdet.size(0), -1).sum(dim=1) * -1.
         return out, logdet
 
-    @overrides
+    # @overrides
     def init(self, data, init_scale=1.0) -> Tuple[torch.Tensor, torch.Tensor]:
         with torch.no_grad():
             return self.forward(data)
 
-    @overrides
+    # @overrides
     def extra_repr(self):
         return 'inverse={}'.format(self.inverse)
 

@@ -27,7 +27,7 @@ class Prior(Flow):
     def sync(self):
         self.conv1x1.sync()
 
-    @overrides
+    # @overrides
     def forward(self, input: torch.Tensor, s=None) -> Tuple[torch.Tensor, torch.Tensor]:
         out, logdet_accum = self.actnorm.forward(input)
 
@@ -48,7 +48,7 @@ class Prior(Flow):
         logdet_accum = logdet_accum + logdet
         return out, logdet_accum
 
-    @overrides
+    # @overrides
     def init(self, data, s=None, init_scale=1.0) -> Tuple[torch.Tensor, torch.Tensor]:
         out, logdet_accum = self.actnorm.init(data, init_scale=init_scale)
 
@@ -75,7 +75,7 @@ class GlowStep(Flow):
     def sync(self):
         self.conv1x1.sync()
 
-    @overrides
+    # @overrides
     def forward(self, input: torch.Tensor, s=None) -> Tuple[torch.Tensor, torch.Tensor]:
         out, logdet_accum = self.actnorm.forward(input)
 
@@ -86,7 +86,7 @@ class GlowStep(Flow):
         logdet_accum = logdet_accum + logdet
         return out, logdet_accum
 
-    @overrides
+    # @overrides
     def backward(self, input: torch.Tensor, s=None) -> Tuple[torch.Tensor, torch.Tensor]:
         out, logdet_accum = self.coupling.backward(input, s=s)
 
@@ -97,7 +97,7 @@ class GlowStep(Flow):
         logdet_accum = logdet_accum + logdet
         return out, logdet_accum
 
-    @overrides
+    # @overrides
     def init(self, data, s=None, init_scale=1.0) -> Tuple[torch.Tensor, torch.Tensor]:
         out, logdet_accum = self.actnorm.init(data, init_scale=init_scale)
 
@@ -122,7 +122,7 @@ class GlowTopBlock(Flow):
         for step in self.steps:
             step.sync()
 
-    @overrides
+    # @overrides
     def forward(self, input: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
         out = input
         # [batch]
@@ -132,7 +132,7 @@ class GlowTopBlock(Flow):
             logdet_accum = logdet_accum + logdet
         return out, logdet_accum
 
-    @overrides
+    # @overrides
     def backward(self, input: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
         logdet_accum = input.new_zeros(input.size(0))
         out = input
@@ -141,7 +141,7 @@ class GlowTopBlock(Flow):
             logdet_accum = logdet_accum + logdet
         return out, logdet_accum
 
-    @overrides
+    # @overrides
     def init(self, data, init_scale=1.0) -> Tuple[torch.Tensor, torch.Tensor]:
         out = data
         # [batch]
@@ -167,7 +167,7 @@ class GlowInternalBlock(Flow):
             step.sync()
         self.prior.sync()
 
-    @overrides
+    # @overrides
     def forward(self, input: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
         out = input
         # [batch]
@@ -179,7 +179,7 @@ class GlowInternalBlock(Flow):
         logdet_accum = logdet_accum + logdet
         return out, logdet_accum
 
-    @overrides
+    # @overrides
     def backward(self, input: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
         # [batch]
         out, logdet_accum = self.prior.backward(input)
@@ -188,7 +188,7 @@ class GlowInternalBlock(Flow):
             logdet_accum = logdet_accum + logdet
         return out, logdet_accum
 
-    @overrides
+    # @overrides
     def init(self, data, init_scale=1.0) -> Tuple[Tuple[torch.Tensor, torch.Tensor], torch.Tensor]:
         out = data
         # [batch]
@@ -227,7 +227,7 @@ class Glow(Flow):
         for block in self.blocks:
             block.sync()
 
-    @overrides
+    # @overrides
     def forward(self, input: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
         logdet_accum = input.new_zeros(input.size(0))
         out = input
@@ -248,7 +248,7 @@ class Glow(Flow):
         assert len(outputs) == 0
         return out, logdet_accum
 
-    @overrides
+    # @overrides
     def backward(self, input: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
         outputs = []
         out = squeeze2d(input, factor=2)
@@ -268,7 +268,7 @@ class Glow(Flow):
         assert len(outputs) == 0
         return out, logdet_accum
 
-    @overrides
+    # @overrides
     def init(self, data, init_scale=1.0) -> Tuple[torch.Tensor, torch.Tensor]:
         logdet_accum = data.new_zeros(data.size(0))
         out = data

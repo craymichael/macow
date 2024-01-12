@@ -193,7 +193,7 @@ class NICE(Flow):
             scale = log_scale.add_(2.).sigmoid_()
         return mu, scale
 
-    @overrides
+    # @overrides
     def forward(self, input: torch.Tensor, s=None) -> Tuple[torch.Tensor, torch.Tensor]:
         """
         Args:
@@ -217,7 +217,7 @@ class NICE(Flow):
         z2 = z2 + mu
         return torch.cat([z1, z2], dim=1), logdet
 
-    @overrides
+    # @overrides
     def backward(self, input: torch.Tensor, s=None) -> Tuple[torch.Tensor, torch.Tensor]:
         """
         Args:
@@ -241,7 +241,7 @@ class NICE(Flow):
 
         return torch.cat([z1, z2], dim=1), logdet
 
-    @overrides
+    # @overrides
     def init(self, data: torch.Tensor, s=None, init_scale=1.0) -> Tuple[torch.Tensor, torch.Tensor]:
         # [batch, in_channels, H, W]
         z1 = data[:, :self.z1_channels]
@@ -256,7 +256,7 @@ class NICE(Flow):
 
         return torch.cat([z1, z2], dim=1), logdet
 
-    @overrides
+    # @overrides
     def extra_repr(self):
         return 'inverse={}, in_channels={}, scale={}'.format(self.inverse, self.in_channels, self.scale)
 

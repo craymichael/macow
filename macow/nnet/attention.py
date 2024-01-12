@@ -20,15 +20,15 @@ class MultiHeadAttention(nn.Module):
         self.features = features
         self.heads = heads
 
-    @overrides
-    def forward(self, x, pos_enc=None):
+    # @overrides
+    def forward(self, input, pos_enc=None):
         if pos_enc is not None:
-            x = x + pos_enc
-        bs, timesteps, features = x.size()
+            input = input + pos_enc
+        bs, timesteps, features = input.size()
         heads = self.heads
         dim = features // heads
         # [batch, timesteps, 3 * features]
-        c = self.proj(x)
+        c = self.proj(input)
         # [batch, timesteps, 3, heads, dim]
         c = c.view(bs, timesteps, 3, heads, dim)
         # [3, batch, heads, timesteps, dim]
@@ -46,18 +46,18 @@ class MultiHeadAttention(nn.Module):
             out = self.dropout(out)
         # merge heads
         # [batch, timesteps, heads, dim]
-        out = x.view(bs, timesteps, heads, dim) + out.transpose(1, 2)
+        out = input.view(bs, timesteps, heads, dim) + out.transpose(1, 2)
         out = out.view(bs, timesteps, features)
         return out
 
-    def init(self, x, pos_enc=None, init_scale=1.0):
+    def init(self, input, pos_enc=None, init_scale=1.0):
         if pos_enc is not None:
-            x = x + pos_enc
-        bs, timesteps, features = x.size()
+            input = input + pos_enc
+        bs, timesteps, features = input.size()
         heads = self.heads
         dim = features // heads
         # [batch, timesteps, 3 * features]
-        c = self.proj.init(x, init_scale=init_scale)
+        c = self.proj.init(input, init_scale=init_scale)
         # [batch, timesteps, 3, heads, dim]
         c = c.view(bs, timesteps, 3, heads, dim)
         # [3, batch, heads, timesteps, dim]
@@ -75,7 +75,7 @@ class MultiHeadAttention(nn.Module):
             out = self.dropout(out)
         # merge heads
         # [batch, timesteps, heads, dim]
-        out = x.view(bs, timesteps, heads, dim) + out.transpose(1, 2)
+        out = input.view(bs, timesteps, heads, dim) + out.transpose(1, 2)
         out = out.view(bs, timesteps, features)
         return out
 
@@ -93,16 +93,16 @@ class MultiHeadAttention2d(nn.Module):
         self.features = channels
         self.heads = heads
 
-    @overrides
-    def forward(self, x, pos_enc=None):
+    # @overrides
+    def forward(self, input, pos_enc=None):
         # [batch, channels, height, width]
         if pos_enc is not None:
-            x = x + pos_enc
-        bs, channels, height, width = x.size()
+            input = input + pos_enc
+        bs, channels, height, width = input.size()
         heads = self.heads
         dim = channels // heads
         # [batch, 3 * channels, height, width]
-        c = self.proj(x)
+        c = self.proj(input)
         # [batch, 3, heads, dim, height, width]
         c = c.view(bs, 3, heads, dim, height, width)
         # [batch, heads, dim, height, width]
@@ -120,18 +120,18 @@ class MultiHeadAttention2d(nn.Module):
             out = self.dropout(out)
         # merge heads
         # [batch, channels, heads, dim]
-        out = x + out.view(bs, channels, height, width)
+        out = input + out.view(bs, channels, height, width)
         return out
 
-    def init(self, x, pos_enc=None, init_scale=1.0):
+    def init(self, input, pos_enc=None, init_scale=1.0):
         # [batch, channels, height, width]
         if pos_enc is not None:
-            x = x + pos_enc
-        bs, channels, height, width = x.size()
+            input = input + pos_enc
+        bs, channels, height, width = input.size()
         heads = self.heads
         dim = channels // heads
         # [batch, 3 * channels, height, width]
-        c = self.proj.init(x, init_scale=init_scale)
+        c = self.proj.init(input, init_scale=init_scale)
         # [batch, 3, heads, dim, height, width]
         c = c.view(bs, 3, heads, dim, height, width)
         # [batch, heads, dim, height, width]
@@ -149,5 +149,5 @@ class MultiHeadAttention2d(nn.Module):
             out = self.dropout(out)
         # merge heads
         # [batch, channels, heads, dim]
-        out = x + out.view(bs, channels, height, width)
+        out = input + out.view(bs, channels, height, width)
         return out

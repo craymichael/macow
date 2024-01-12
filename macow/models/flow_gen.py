@@ -127,7 +127,7 @@ class VDeQuantFlowGenModel(FlowGenModel):
             self.dequant_device = torch.device('cuda:{}'.format(dequant_gpu_id))
             self.dequant_flow = DataParallelFlow(self.dequant_flow, device_ids=device_ids, output_device=0)
 
-    @overrides
+    # @overrides
     def to_device(self, device):
         if self.device is None:
             assert self.dequant_device is None
@@ -137,7 +137,7 @@ class VDeQuantFlowGenModel(FlowGenModel):
             self.dequant_flow = self.dequant_flow.to(self.dequant_device)
             return self
 
-    @overrides
+    # @overrides
     def dequantize(self, x, nsamples=1) -> Tuple[torch.Tensor, torch.Tensor]:
         batch = x.size(0)
         # [batch * nsamples, channels, H, W]
@@ -153,7 +153,7 @@ class VDeQuantFlowGenModel(FlowGenModel):
         log_posteriors = log_posteriors.mul(-0.5) - logdet
         return u.view(batch, nsamples, *x.size()[1:]), log_posteriors.view(batch, nsamples)
 
-    @overrides
+    # @overrides
     def init(self, data, init_scale=1.0) -> Tuple[torch.Tensor, torch.Tensor]:
         # [batch, channels, H, W]
         epsilon = torch.randn(data.size(), device=data.device)

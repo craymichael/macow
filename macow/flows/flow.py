@@ -15,11 +15,11 @@ class Flow(nn.Module):
         super(Flow, self).__init__()
         self.inverse = inverse
 
-    def forward(self, *inputs, **kwargs) -> Tuple[torch.Tensor, torch.Tensor]:
+    def forward(self, input: torch.Tensor, **kwargs) -> Tuple[torch.Tensor, torch.Tensor]:
         """
 
         Args:
-            *input: input [batch, *input_size]
+            input: input [batch, *input_size]
 
         Returns: out: Tensor [batch, *input_size], logdet: Tensor [batch]
             out, the output of the flow
@@ -27,11 +27,11 @@ class Flow(nn.Module):
         """
         raise NotImplementedError
 
-    def backward(self, *inputs, **kwargs) -> Tuple[torch.Tensor, torch.Tensor]:
+    def backward(self, input: torch.Tensor, **kwargs) -> Tuple[torch.Tensor, torch.Tensor]:
         """
 
         Args:
-            *input: input [batch, *input_size]
+            input: input [batch, *input_size]
 
         Returns: out: Tensor [batch, *input_size], logdet: Tensor [batch]
             out, the output of the flow
@@ -39,7 +39,7 @@ class Flow(nn.Module):
         """
         raise NotImplementedError
 
-    def init(self, *input, **kwargs) -> Tuple[torch.Tensor, torch.Tensor]:
+    def init(self, input: torch.Tensor, **kwargs) -> Tuple[torch.Tensor, torch.Tensor]:
         raise NotImplementedError
 
     def fwdpass(self, x: torch.Tensor, *h, init=False, init_scale=1.0, **kwargs) -> Tuple[torch.Tensor, torch.Tensor]:

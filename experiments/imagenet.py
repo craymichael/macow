@@ -74,7 +74,8 @@ result_path = os.path.join(model_path, 'images')
 if not os.path.exists(result_path):
     os.makedirs(result_path)
 
-data_path = os.path.join(args.data_path, 'imagenet{}x{}'.format(imageSize, imageSize))
+# data_path = os.path.join(args.data_path, 'imagenet{}x{}'.format(imageSize, imageSize))
+data_path = args.data_path
 train_data, test_data = load_datasets(dataset, data_path)
 
 train_index = np.arange(len(train_data))
@@ -297,7 +298,7 @@ else:
         raise ValueError('unknown dequantization method: %s' % dequant)
     # initialize
     fgen.eval()
-    init_batch_size = 1024 if imageSize == 32 else 256
+    init_batch_size = 1024 if imageSize == 32 else 256  # TODO watch imageSize here
     init_iter = 1
     print('init: {} instances with {} iterations'.format(init_batch_size, init_iter))
     for _ in range(init_iter):
