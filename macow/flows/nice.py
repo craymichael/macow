@@ -182,7 +182,8 @@ class NICE(Flow):
         scale = None
         if self.scale:
             mu, log_scale = mu.chunk(2, dim=1)
-            scale = log_scale.add_(2.).sigmoid_()
+            # scale = log_scale.add_(2.).sigmoid_()
+            scale = log_scale.add(2.).sigmoid_()
         return mu, scale
 
     def init_net(self, z1: torch.Tensor, s=None, init_scale=1.0):
@@ -190,7 +191,8 @@ class NICE(Flow):
         scale = None
         if self.scale:
             mu, log_scale = mu.chunk(2, dim=1)
-            scale = log_scale.add_(2.).sigmoid_()
+            # scale = log_scale.add_(2.).sigmoid_()
+            scale = log_scale.add(2.).sigmoid_()
         return mu, scale
 
     # @overrides

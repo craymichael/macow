@@ -47,6 +47,11 @@ python -u lsun.py --config configs/lsun128-vdq.json --category [church_outdorr|t
 python -u lsun.py --config configs/lsun128-vdq.json --category [church_outdorr|tower|bedroom] --image-size 128 --batch-size 160 --batch-steps 16 --data_path '<data_path>' --model_path '<model_path>' --dequant variational --n_bits 5 --train_k 3
 ```
 
+### ImageNet
+Zach added
+```shell
+python -u imagenet.py --config configs/imagenet64-vdq.json --image-size 64 --batch-size 160 --batch-steps 16 --data_path '/project01/cvrl/datasets/imagenet64/as_dirs/' --model_path 'models/imagenet/' --dequant variational --n_bits 8 --train_k 3
+```
 Remeber to setup the paths for data and models with arguments `--data_path` and `--model_path`.
 Sampled images after each epoch are stored in the directory: `<model_path>/images`. 
 
